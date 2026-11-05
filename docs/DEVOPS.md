@@ -156,10 +156,10 @@ falhar, ela vira pré-release com o aviso do rollback.
 Cada versão gera estas imagens no GHCR:
 
 ```
-ghcr.io/bastosnz/dress-backend:1.2.0     versão exata (usada no deploy e no rollback)
-ghcr.io/bastosnz/dress-backend:1.2       última correção da 1.2
-ghcr.io/bastosnz/dress-backend:latest    última versão estável
-ghcr.io/bastosnz/dress-backend:sha-abc1234   cada commit da main
+ghcr.io/jpacouto/dress-backend:1.2.0     versão exata (usada no deploy e no rollback)
+ghcr.io/jpacouto/dress-backend:1.2       última correção da 1.2
+ghcr.io/jpacouto/dress-backend:latest    última versão estável
+ghcr.io/jpacouto/dress-backend:sha-abc1234   cada commit da main
 ```
 
 (e o mesmo para `dress-frontend`)

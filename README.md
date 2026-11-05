@@ -1,6 +1,6 @@
 # D.R.E.S.S. - Digital Retail Enterprise Sales System
 
-[![CD](https://github.com/BastosNZ/dress/actions/workflows/cd.yml/badge.svg)](https://github.com/BastosNZ/dress/actions/workflows/cd.yml)
+[![CD](https://github.com/JPACouto/D.R.E.S.S/actions/workflows/cd.yml/badge.svg)](https://github.com/JPACouto/D.R.E.S.S/actions/workflows/cd.yml)
 
 Sistema web desenvolvido para gerenciamento de uma loja de roupas, permitindo o controle de clientes, produtos, estoque e vendas através de uma API REST integrada a uma interface gráfica.
 
@@ -102,8 +102,8 @@ D.R.E.S.S-main
 Precisa só do Docker instalado.
 
 ```bash
-git clone https://github.com/BastosNZ/dress.git
-cd dress
+git clone https://github.com/JPACouto/D.R.E.S.S.git
+cd D.R.E.S.S
 cp .env.example .env      # preencha as senhas
 docker compose up -d --build
 ```
@@ -134,13 +134,13 @@ Antes de executar o projeto, instale:
 # Clonando o Projeto
 
 ```bash
-git clone https://github.com/BastosNZ/dress.git
+git clone https://github.com/JPACouto/D.R.E.S.S.git
 ```
 
 Entre na pasta do projeto:
 
 ```bash
-cd dress/D.R.E.S.S-main
+cd D.R.E.S.S/D.R.E.S.S-main
 ```
 
 ---
@@ -404,8 +404,9 @@ Essa organização facilita a manutenção e escalabilidade da aplicação.
 # Integrantes
 
 - João Pedro Couto
-- Thiago de Pádua 
+- Thiago de Pádua
 - Enzo Bastos
+- Emmanuel Avelino
 
 ---
 

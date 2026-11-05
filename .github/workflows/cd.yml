@@ -47,7 +47,7 @@ jobs:
           else
             echo "versao=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
           fi
-          # o GHCR só aceita nome em minúsculo (BastosNZ -> bastosnz)
+          # o GHCR só aceita nome em minúsculo (JPACouto -> jpacouto)
           echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
 
   publicar:

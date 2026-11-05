@@ -37,7 +37,7 @@ services:
   backend:
     # Sem APP_VERSION usa a imagem buildada na hora (tag "local").
     # No deploy o pipeline define APP_VERSION=1.2.0 e puxa do GHCR.
-    image: ${REGISTRY:-ghcr.io/bastosnz}/dress-backend:${APP_VERSION:-local}
+    image: ${REGISTRY:-ghcr.io/jpacouto}/dress-backend:${APP_VERSION:-local}
     build:
       context: ./D.R.E.S.S-main/backend
       args:
@@ -61,7 +61,7 @@ services:
       - "${BACKEND_PORT:-3000}:3000"
 
   frontend:
-    image: ${REGISTRY:-ghcr.io/bastosnz}/dress-frontend:${APP_VERSION:-local}
+    image: ${REGISTRY:-ghcr.io/jpacouto}/dress-frontend:${APP_VERSION:-local}
     build:
       context: ./D.R.E.S.S-main/frontend
       args:
