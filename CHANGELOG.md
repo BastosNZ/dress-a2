@@ -3,6 +3,17 @@
 As mudanças de cada versão do D.R.E.S.S. ficam aqui.
 O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 
+## [1.1.2] - 2026-11-05
+
+### Corrigido
+- Porta da API no Dockerfile voltou para 3000 (a 1.1.1 subia na 3001 e o
+  healthcheck nunca passava)
+
+## [1.1.1] - 2026-11-05 (não usar)
+
+- Release com a porta errada no Dockerfile. O deploy de produção falhou no
+  smoke test e fez rollback automático para a 1.1.0.
+
 ## [1.1.0] - 2026-11-05
 
 ### Adicionado
