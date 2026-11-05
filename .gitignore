@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Environment — never commit real secrets, use .env.example as the template
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Tests / coverage
+coverage/
+.pytest_cache/
+
+# Editors / OS
+.vscode/
+*.code-workspace
+.idea/
+.DS_Store
+Thumbs.db
+
+# Versão no ar em cada ambiente (gerado pelo scripts/deploy.sh)
+.versao-*
