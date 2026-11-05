@@ -191,21 +191,23 @@ scripts/deploy.sh producao 1.1.0
 
 ### Simulação documentada
 
-Roteiro usado para gerar a evidência:
+O que aconteceu no repositório, em ordem:
 
-1. **Versão boa no ar:** tag `v1.1.0` → pipeline verde → release `v1.1.0`.
-2. **Versão com defeito:** na branch `simulacao/rollback-v1.1.1` (que não vai
-   para a main), o Dockerfile do backend foi alterado para subir a API na porta
-   **3001**, enquanto o healthcheck e o compose usam a **3000**. É um erro de
-   configuração típico: os testes e o build passam (CI verde), mas a aplicação
-   não funciona no ambiente. Dessa branch foi criada a tag `v1.1.1`.
-3. **O pipeline detecta:** o container da 1.1.1 nunca fica saudável, o
-   `docker compose up --wait` falha e o `scripts/deploy.sh` faz o rollback para
-   a **1.1.0**, que passa no smoke test.
-4. **Resultado:** job de produção vermelho com o log
-   `ROLLBACK: voltando [producao] para a versão 1.1.0` e
-   `Rollback concluído`, e a release `v1.1.1` marcada como pré-release com o
-   aviso de falha.
+1. **v1.1.0 no ar:** release `v1.1.0` → CI → imagens `1.1.0` no GHCR →
+   deploy em produção com smoke test verde.
+2. **Defeito entra na main:** o commit `2d76f4f` trocou a porta da API no
+   Dockerfile para **3001**, enquanto o healthcheck e o compose usam a **3000**.
+   Os testes e o build continuam passando (o CI fica verde), mas a aplicação
+   não funciona dentro do container. É o tipo de erro de configuração que só
+   aparece no ambiente.
+3. **v1.1.1 com o defeito:** a release `v1.1.1` foi criada a partir dessa main.
+   O container da API nunca fica saudável, o `docker compose up --wait` falha e o
+   `scripts/deploy.sh` faz o **rollback automático para a 1.1.0**, que passa no
+   smoke test. O job de produção termina vermelho com
+   `ROLLBACK: voltando [producao] para a versão 1.1.0` e `Rollback concluído`,
+   e a release `v1.1.1` vira pré-release com o aviso de falha.
+4. **Correção:** o PR de hotfix voltou a porta para 3000 e foi lançado como
+   `v1.1.2`, que passa no deploy normalmente.
 
 Para repetir na máquina, sem depender do GHCR (`BUILD_LOCAL=1` builda as imagens localmente):
 

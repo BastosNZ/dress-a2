@@ -20,7 +20,7 @@ FROM node:20-alpine
 ARG APP_VERSION=local
 ENV NODE_ENV=production \
     APP_VERSION=${APP_VERSION} \
-    PORT=3001
+    PORT=3000
 
 LABEL org.opencontainers.image.title="dress-backend" \
       org.opencontainers.image.description="API REST do D.R.E.S.S." \
