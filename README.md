@@ -306,6 +306,7 @@ Essa organização facilita a manutenção e escalabilidade da aplicação.
 - João Pedro Couto
 - Thiago de Pádua 
 - Enzo Bastos
+- Emmanuel Avelino
 
 ---
 
