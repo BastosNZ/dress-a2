@@ -43,7 +43,7 @@ O D.R.E.S.S. tem como objetivo facilitar o gerenciamento de uma loja de roupas, 
 - Express.js
 - MySQL
 - JWT (JSON Web Token)
-- Bcrypt
+- bcryptjs
 - Dotenv
 
 ## Frontend
@@ -81,7 +81,8 @@ D.R.E.S.S-main
 │   └── requirements.txt
 │
 ├── database
-│   └── D.R.E.S.S.sql
+│   ├── D.R.E.S.S.sql
+│   └── seed.sql
 │
 └── README.md
 ```
@@ -102,30 +103,32 @@ Antes de executar o projeto, instale:
 # Clonando o Projeto
 
 ```bash
-git clone https://github.com/JPACouto/D.R.E.S.S.git
+git clone https://github.com/BastosNZ/dress.git
 ```
 
 Entre na pasta do projeto:
 
 ```bash
-cd D.R.E.S.S/D.R.E.S.S-main
+cd dress/D.R.E.S.S-main
 ```
 
 ---
 
 # Configurando o Banco de Dados
 
-Crie um banco chamado:
+Crie o banco vazio:
 
 ```sql
 CREATE DATABASE dress;
 ```
 
-Depois importe o arquivo:
+As tabelas são criadas automaticamente na primeira execução do backend: o
+`server.js` chama `initDatabase()`, que roda os `CREATE TABLE IF NOT EXISTS`,
+insere os dados iniciais de clientes e produtos e cria o primeiro administrador
+a partir do `.env` (veja abaixo).
 
-```
-database/D.R.E.S.S.sql
-```
+Para criar o esquema manualmente, importe `database/D.R.E.S.S.sql` e,
+opcionalmente, `database/seed.sql`.
 
 ---
 
@@ -151,12 +154,23 @@ Exemplo:
 PORT=3000
 
 DB_HOST=localhost
+DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=sua_senha
 DB_NAME=dress
 
-JWT_SECRET=sua_chave_secreta
+JWT_SECRET=uma_frase_longa_e_aleatoria
+JWT_EXPIRES_IN=1h
+
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=sua_senha_de_admin
 ```
+
+`JWT_SECRET` é obrigatório: sem ele o servidor não sobe.
+
+Na primeira execução, se o banco ainda não tiver nenhum administrador, o backend
+cria um com `ADMIN_USERNAME` e `ADMIN_PASSWORD`. É com esse usuário que se faz o
+primeiro login e se cadastram os outros usuários.
 
 Execute o servidor:
 
@@ -204,6 +218,23 @@ A interface será aberta automaticamente no navegador.
 
 ---
 
+# Testes
+
+O backend tem testes escritos com Jest. Os repositórios são mockados, então a
+suíte roda sem banco de dados.
+
+Na pasta `backend`:
+
+```bash
+npm test
+```
+
+Além dos testes de unidade dos serviços, há testes de integração com
+`supertest` que sobem a API e testam as rotas (permissões, erros, validações),
+também sem banco.
+
+---
+
 # Autenticação
 
 O sistema utiliza autenticação baseada em **JWT (JSON Web Token)**.
@@ -218,50 +249,77 @@ Authorization: Bearer SEU_TOKEN
 
 # Principais Endpoints
 
-## Autenticação
+Todas as rotas são montadas sobre `http://localhost:3000`.
 
-| Método | Endpoint |
-|---------|----------|
-| POST | /login |
+As rotas marcadas com **token** exigem o cabeçalho
+`Authorization: Bearer SEU_TOKEN`.
+
+## Autenticação — `/auth`
+
+| Método | Endpoint | Autenticação |
+|---|---|---|
+| POST | `/auth/login` | não |
+| GET | `/auth/me` | token |
+| PUT | `/auth/senha` | token |
+
+## Usuários — `/usuarios`
+
+| Método | Endpoint | Autenticação |
+|---|---|---|
+| GET | `/usuarios` | token + perfil `ADMIN` |
+| POST | `/usuarios` | token + perfil `ADMIN` |
+| PATCH | `/usuarios/:id/ativo` | token + perfil `ADMIN` |
+
+## Clientes — `/clientes`
+
+| Método | Endpoint | Autenticação |
+|---|---|---|
+| GET | `/clientes` | token |
+| GET | `/clientes/:id` | token |
+| POST | `/clientes` | token |
+| PUT | `/clientes/:id` | token |
+| DELETE | `/clientes/:id` | token + perfil `ADMIN` |
+
+## Produtos — `/produtos`
+
+| Método | Endpoint | Autenticação |
+|---|---|---|
+| GET | `/produtos` | token |
+| GET | `/produtos/:id` | token |
+| POST | `/produtos` | token |
+| PUT | `/produtos/:id` | token |
+| DELETE | `/produtos/:id` | token + perfil `ADMIN` |
+
+## Vendas — `/vendas`
+
+| Método | Endpoint | Autenticação |
+|---|---|---|
+| GET | `/vendas` | token |
+| GET | `/vendas/:id` | token |
+| POST | `/vendas` | token |
+
+## Relatórios — `/relatorios`
+
+| Método | Endpoint | Autenticação |
+|---|---|---|
+| GET | `/relatorios/periodo` | token |
+| GET | `/relatorios/cliente/:id` | token |
 
 ---
 
-## Clientes
+# Permissões
 
-| Método | Endpoint |
-|---------|----------|
-| GET | /clientes |
-| POST | /clientes |
-| PUT | /clientes/:id |
-| DELETE | /clientes/:id |
+| Ação | ADMIN | FUNCIONARIO |
+|---|---|---|
+| Ver, cadastrar e editar clientes e produtos | sim | sim |
+| Excluir clientes e produtos | sim | não |
+| Registrar e consultar vendas | sim | sim |
+| Ver relatórios | sim | sim |
+| Cadastrar, listar e desativar usuários | sim | não |
+| Trocar a própria senha | sim | sim |
 
----
-
-## Produtos
-
-| Método | Endpoint |
-|---------|----------|
-| GET | /produtos |
-| POST | /produtos |
-| PUT | /produtos/:id |
-| DELETE | /produtos/:id |
-
----
-
-## Vendas
-
-| Método | Endpoint |
-|---------|----------|
-| GET | /vendas |
-| POST | /vendas |
-
----
-
-## Relatórios
-
-| Método | Endpoint |
-|---------|----------|
-| GET | /relatorios |
+Um usuário desativado perde o acesso na hora, mesmo que ainda tenha um token
+válido. O sistema não deixa desativar o último administrador ativo.
 
 ---
 
@@ -306,7 +364,6 @@ Essa organização facilita a manutenção e escalabilidade da aplicação.
 - João Pedro Couto
 - Thiago de Pádua 
 - Enzo Bastos
-- Emmanuel Avelino
 
 ---
 
